@@ -34,7 +34,7 @@ exports.detail = asyncHandler(async (req, res, next) => {
     const material = await Material.findById(req.params.id).exec();
 
     if (material === null) {
-        res.status(204).json({ error: "Material not found" });
+        res.status(404).json({ error: "Material not found" });
     }
 
     res.json(material);
@@ -62,7 +62,7 @@ exports.delete = asyncHandler(async (req, res, next) => {
     const material = await Material.findById(req.params.id).exec();
 
     if (material == null) {
-        return res.status(204).json({ error: 'Material not found' });
+        return res.status(404).json({ error: 'Material not found' });
     }
 
     await Material.findByIdAndDelete(req.params.id);
@@ -82,7 +82,7 @@ exports.update = [
         // Check if the Material exists
         const material = await Material.findOne({ _id: req.params.id });
         if (material == null) {
-            return res.status(204).json({ error: 'Material not found' });
+            return res.status(404).json({ error: 'Material not found' });
         }
 
         const updatedMaterial = await Material.findOneAndUpdate(

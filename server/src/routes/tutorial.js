@@ -3,28 +3,21 @@ const express = require("express");
 const controller = require("../controllers/tutorial");
 
 const validateMongoId = require("../middleware/validateMongoId");
-const authenicateWithJwt = require("../middleware/authenticateWithJwt");
+const authenticateWithJwt = require("../middleware/authenticateWithJwt");
 const validatePaginateQueryParams = require("../middleware/validatePaginateQueryParams");
 
 const router = express.Router();
 
-// List all, and create tutorials are protected routes
-router.route("/") //     
-    .all(authenicateWithJwt)
+// Public GET, protected POST
+router.route("/")
     .get(validatePaginateQueryParams, controller.list)
-    .post(controller.create);
+    .post(authenticateWithJwt, controller.create);
 
-// Get particular tutorial is unprotected
+// Public GET by id, protected PUT and DELETE
 router.route("/:id")
-    .all(authenicateWithJwt)
-    .all(validateMongoId('id'))
-    .get(controller.detail);
-
-// Update and delete tutorial is protected
-router.route("/:id")
-    .all(authenicateWithJwt)
-    .all(validateMongoId('id'))
-    .put(controller.update)
-    .delete(controller.delete);
+    .all(validateMongoId("id"))
+    .get(controller.detail)
+    .put(authenticateWithJwt, controller.update)
+    .delete(authenticateWithJwt, controller.delete);
 
 module.exports = router;

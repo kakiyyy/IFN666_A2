@@ -1,6 +1,6 @@
 const express = require("express");
 
-const controller = require("../controllers/category");
+const controller = require("../controllers/material");
 
 const validateMongoId = require("../middleware/validateMongoId");
 const authenticateWithJwt = require("../middleware/authenticateWithJwt");

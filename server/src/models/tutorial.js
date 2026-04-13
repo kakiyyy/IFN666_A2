@@ -24,15 +24,20 @@ const tutorialSchema = new mongoose.Schema({
         enum: ["Beginner", "Intermediate", "Advanced"],
         required: true,
     },
+    author: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+        required: true
+    },
     categories: [{
         type: mongoose.Schema.ObjectId,
         ref: "Category",
     }],
     material: [
         {
-            ingredient: {
+            material: {
                 type: mongoose.Schema.Types.ObjectId,
-                ref: "Ingredient",
+                ref: "Material",
                 required: true
             },
             quantity: {

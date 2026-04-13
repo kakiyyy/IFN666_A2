@@ -34,7 +34,7 @@ exports.detail = asyncHandler(async (req, res, next) => {
     const category = await Category.findById(req.params.id).exec();
 
     if (category === null) {
-        res.status(204).json({ error: "Category not found" });
+        res.status(404).json({ error: "Category not found" });
     }
 
     res.json(category);
@@ -63,7 +63,7 @@ exports.delete = asyncHandler(async (req, res, next) => {
     const category = await Category.findById(req.params.id).exec();
 
     if (category == null) {
-        return res.status(204).json({ error: 'Category not found' });
+        return res.status(240404).json({ error: 'Category not found' });
     }
 
     await Category.findByIdAndDelete(req.params.id);
@@ -83,7 +83,7 @@ exports.update = [
         // Check if the Category exists
         const category = await Category.findOne({ _id: req.params.id });
         if (category == null) {
-            return res.status(204).json({ error: 'Category not found' });
+            return res.status(404).json({ error: 'Category not found' });
         }
 
         const updatedCategory = await Category.findOneAndUpdate(
@@ -91,7 +91,6 @@ exports.update = [
             {
                 $set: {
                     name: req.body.name,
-                    description: req.body.description
                 }
             },
             { new: true, runValidators: true } // `new: true` returns the updated document

@@ -23,7 +23,7 @@ const authenticateWithJwt = (req, res, next) => {
          err.name,
          err.message
       );
-      return res.sendStatus(401).json({ error: "Invalid token" });
+      return res.status(401).json({ error: "Invalid token" });
    }
 };
 

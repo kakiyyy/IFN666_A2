@@ -67,9 +67,7 @@ exports.list = [
 
         const title = req.query.title || '';
 
-        let filters = req.user.is_admin
-            ? { title: new RegExp(title, 'i') }
-            : { title: new RegExp(title, 'i'), author: req.user.user_id };
+        const filters = { title: new RegExp(title, "i") };
 
         const tutorialPage = await Tutorial
             .find(filters)
@@ -85,21 +83,21 @@ exports.list = [
             .links(generatePaginationLinks(
                 req.originalUrl,
                 req.paginate.page,
-                taskPage.totalPages,
+                tutorialPage.totalPages,
                 req.paginate.limit
             ))
-            .json(taskPage.docs);
+            .json(tutorialPage.docs);
     })
 ];
 
 exports.detail = asyncHandler(async (req, res, next) => {
-    const task = await Task.findById(req.params.id).populate("categories");
+    const tutorial = await Tutorial.findById(req.params.id).populate("categories");
 
-    if (task === null) {
-        res.status(204).json({ error: "Task not found" });
+    if (tutorial === null) {
+        res.status(404).json({ error: "Tutorial not found" });
     }
 
-    res.json(task);
+    res.json(tutorial);
 });
 
 exports.create = [
@@ -110,29 +108,30 @@ exports.create = [
             return res.status(400).json({ errors: errors.array() });
         }
 
-        const task = new Task({
+        const tutorial = new Tutorial({
             title: req.body.title,
             description: req.body.description,
-            dueDate: req.body.dueDate,
-            status: req.body.status,
+            instructions: req.body.instructions,
+            AverageTimeSpentMinutes: req.body.AverageTimeSpentMinutes,
+            difficulty: req.body.difficulty,
             author: req.user.user_id,
             categories: req.body.categories || []
         });
 
-        await task.save();
-        res.status(201).json(task);
+        await tutorial.save();
+        res.status(201).json(tutorial);
     })
 ];
 
 exports.delete = asyncHandler(async (req, res, next) => {
 
-    const task = await Task.findById(req.params.id).exec();
+    const tutorial = await Tutorial.findById(req.params.id).exec();
 
-    if (task == null) {
-        return res.status(204).json({ error: 'Task not found' });
+    if (tutorial == null) {
+        return res.status(404).json({ error: 'Tutorial not found' });
     }
 
-    await Task.findByIdAndDelete(req.params.id);
+    await Tutorial.findByIdAndDelete(req.params.id);
     res.status(200);
 });
 
@@ -146,13 +145,13 @@ exports.update = [
             return res.status(400).json({ errors: errors.array() });
         }
 
-        // Check if the Task exists
-        const task = await Task.findOne({ _id: req.params.id });
-        if (task == null) {
-            return res.status(204).json({ error: 'Task not found' });
+        // Check if the Tutorial exists
+        const tutorial = await Tutorial.findOne({ _id: req.params.id });
+        if (tutorial == null) {
+            return res.status(404).json({ error: 'Tutorial not found' });
         }
 
-        const updatedTask = await Task.findOneAndUpdate(
+        const updatedTutorial = await Tutorial.findOneAndUpdate(
             { _id: req.params.id },
             {
                 $set: {
@@ -165,6 +164,6 @@ exports.update = [
             },
             { new: true, runValidators: true } // `new: true` returns the updated document
         );
-        res.status(200).json(updatedTask);
+        res.status(200).json(updatedTutorial);
     }),
 ];
